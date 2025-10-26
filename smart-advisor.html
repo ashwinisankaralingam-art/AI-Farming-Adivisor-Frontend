@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AgroMinds — Smart AI Farming Advisor</title>
+
+  <!-- Link your existing CSS here (replace path/name if different) -->
+  <link rel="stylesheet" href="css/agrominds.css" />
+
+  <!-- Optional: a small theme color for browsers -->
+  <meta name="theme-color" content="#2b7a2b" />
+</head>
+<body>
+  <header class="site-header" role="banner">
+    <div class="container">
+      <h1 class="brand">AgroMinds</h1>
+      <p class="tagline">Smart AI Farming Advisor — weather, soil health, recommendations & real-time alerts</p>
+
+      <form id="location-form" class="location-form" aria-label="Select farm location">
+        <label for="farm-location" class="sr-only">Farm location</label>
+        <input id="farm-location" name="farm-location" type="text" placeholder="Enter farm / city / coordinates" />
+        <button id="btn-refresh" type="button" aria-label="Refresh data">Refresh</button>
+        <span id="last-updated" class="last-updated" aria-live="polite">—</span>
+      </form>
+    </div>
+  </header>
+
+  <main class="container" role="main">
+    <section id="dashboard" class="grid" aria-label="Advisor dashboard">
+
+      <!-- Weather forecast -->
+      <article id="weather" class="card" aria-labelledby="weather-title" role="region">
+        <header>
+          <h2 id="weather-title">Weather Forecast</h2>
+          <small class="meta" id="weather-updated">Updated: <span data-key="weather-updated">—</span></small>
+        </header>
+
+        <div class="card-body">
+          <div class="current-weather" aria-live="polite">
+            <h3 class="temp" data-key="temp">--°C</h3>
+            <p class="cond" data-key="condition">—</p>
+            <p class="precip" data-key="precipitation">Precipitation: —</p>
+          </div>
+
+          <ul class="forecast-list" id="forecast-list" aria-label="7 day forecast">
+            <!-- JS should populate forecast items here -->
+            <!-- Example entry structure:
+              <li class="forecast-item" data-day="Mon">
+                <strong>Mon</strong>
+                <span class="f-temp">24°C</span>
+                <span class="f-icon">🌤</span>
+              </li>
+            -->
+          </ul>
+        </div>
+      </article>
+
+      <!-- Soil health reports -->
+      <article id="soil-reports" class="card" aria-labelledby="soil-title" role="region">
+        <header>
+          <h2 id="soil-title">Soil Health Reports</h2>
+          <small class="meta" id="soil-updated">Last sample: <span data-key="soil-sample-date">—</span></small>
+        </header>
+
+        <div class="card-body">
+          <div class="soil-summary" aria-live="polite">
+            <p>Nitrogen (N): <strong data-key="soil-n">—</strong> ppm</p>
+            <p>Phosphorus (P): <strong data-key="soil-p">—</strong> ppm</p>
+            <p>Potassium (K): <strong data-key="soil-k">—</strong> ppm</p>
+            <p>pH: <strong data-key="soil-ph">—</strong></p>
+          </div>
+
+          <div class="soil-actions">
+            <button id="view-soil-history" type="button">View historical trends</button>
+            <button id="request-sample" type="button">Request new sample</button>
+          </div>
+
+          <div id="soil-chart" class="chart" aria-hidden="true">
+            <!-- JS can mount a chart (e.g., Chart.js) here -->
+          </div>
+        </div>
+      </article>
+
+      <!-- AI recommendations -->
+      <article id="ai-recommendations" class="card" aria-labelledby="ai-title" role="region">
+        <header>
+          <h2 id="ai-title">AI Recommendations</h2>
+          <small class="meta" id="ai-model">Model: <span data-key="ai-model">—</span></small>
+        </header>
+
+        <div class="card-body">
+          <ul id="recommendations-list" class="recommendations" aria-live="polite">
+            <!-- JS should insert recommendations here. Each item structure:
+              <li class="rec-item" data-id="rec-1">
+                <h3>Apply nitrogen</h3>
+                <p>Reason: Low N detected — recommended dose 25 kg/ha</p>
+                <div class="rec-meta"><small>Confidence: 92%</small></div>
+              </li>
+            -->
+          </ul>
+
+          <div class="rec-actions">
+            <button id="apply-recommendation" type="button" disabled>Apply selected</button>
+            <button id="save-plan" type="button">Save plan</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Real-time alerts -->
+      <aside id="alerts" class="card alerts" aria-labelledby="alerts-title" role="complementary">
+        <header>
+          <h2 id="alerts-title">Real-time Alerts</h2>
+          <small class="meta" id="alerts-count">Active: <span data-key="alerts-count">0</span></small>
+        </header>
+
+        <div class="card-body">
+          <ul id="alerts-list" class="alerts-list" aria-live="assertive" role="list">
+            <!-- Alerts inserted by JS:
+              <li class="alert-item severity-high">
+                <time datetime="2025-10-26T07:30:00Z">07:30</time>
+                <strong>Frost risk in next 6 hours</strong>
+                <p>Expected low temp 0°C — cover sensitive crops</p>
+              </li>
+            -->
+          </ul>
+
+          <div class="alerts-actions">
+            <label>
+              <input id="alerts-toggle" type="checkbox" checked />
+              Receive push alerts
+            </label>
+            <button id="clear-alerts" type="button">Clear all</button>
+          </div>
+        </div>
+      </aside>
+
+    </section>
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="container">
+      <small>© AgroMinds — Team: agrominds</small>
+      <nav aria-label="Footer">
+        <a href="#" id="help-link">Help</a> ·
+        <a href="#" id="feedback-link">Send feedback</a>
+      </nav>
+    </div>
+  </footer>
+
+  <!-- Link your existing JS here (replace path/name if different) -->
+  <script src="js/agrominds.js" defer></script>
+
+  <!--
+    Notes for integration:
+    - The page exposes these element IDs/data-keys for your existing JS to hook into:
+      #farm-location, #btn-refresh, #last-updated,
+      #weather (and data-keys: temp, condition, precipitation, weather-updated, #forecast-list),
+      #soil-reports (data-keys: soil-n, soil-p, soil-k, soil-ph, soil-sample-date, #soil-chart),
+      #ai-recommendations (#recommendations-list, data-key ai-model),
+      #alerts (#alerts-list, data-key alerts-count, #alerts-toggle).
+    - Replace css/agrominds.css and js/agrominds.js with your actual file paths if different.
+    - Use ARIA attributes in dynamic content updates: set aria-live regions (polite/assertive) when inserting alerts/recommendations.
+    - For real-time functionality, connect your WebSocket / SSE to update #alerts-list and #alerts-count.
+  -->
+
+</body>
+</html>
